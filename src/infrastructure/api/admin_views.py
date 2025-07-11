@@ -1,9 +1,11 @@
-from fastapi import APIRouter
-from src.usecases.get_summary import get_admin_summary
-from src.domain.schemas import SummaryResponse
+from fastapi import APIRouter, HTTPException
+from src.usecases.get_post_statistics import get_post_statistics
 
 admin_router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
-@admin_router.get("/summary", response_model=SummaryResponse)
-def get_summary():
-    return get_admin_summary()
+@admin_router.get("/posts/statistics", summary="Estadísticas de publicaciones")
+def posts_statistics():
+    try:
+        return get_post_statistics()
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
